@@ -1,0 +1,113 @@
+# Default values for pdf-converter
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+image:
+  repository: assistos/pdftohtmlconverter
+  pullPolicy: Always
+  tag: "1.0.0-rc1"
+  # sha256 digest of the image.
+  # Do not add the prefix "@sha256:"
+  sha: "5fc10a509c8535048761a05cf5a430361d84e7cd0072f30961675e98f92217e9"
+
+podAnnotations: {}
+
+deploymentStrategy:
+  type: Recreate
+
+livenessProbe:
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 20
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 10
+
+readinessProbe:
+  httpGet:
+    path: /ready
+    port: http
+  initialDelaySeconds: 20
+  periodSeconds: 20
+  timeoutSeconds: 3
+  successThreshold: 1
+  failureThreshold: 10
+
+podSecurityContext:
+  runAsUser: 1000
+  runAsGroup: 1000
+  fsGroup: 1000
+  # -- The SecComp configuration.
+  # Not enabled by default as not every environment supports it.
+  # seccompProfile:
+  #   type: RuntimeDefault
+
+securityContext:
+  privileged: false
+  capabilities:
+    drop:
+      - ALL
+  readOnlyRootFilesystem: false
+  runAsNonRoot: true
+  runAsUser: 1000
+  runAsGroup: 1000
+  allowPrivilegeEscalation: false
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 200m
+    memory: 256Mi
+
+persistence:
+  enabled: true
+  existingClaim: ""
+  storageClassName: ""
+  size: "10Gi"
+  accessModes:
+    - ReadWriteOnce
+  selectorLabels: {}
+  finalizers:
+    - kubernetes.io/pvc-protection
+
+service:
+  type: ClusterIP
+  port: 3001
+  targetPort: 3001
+
+serviceAccount:
+  # -- Specifies whether a service account should be created
+  create: false
+  # -- Annotations to add to the service account
+  annotations: {}
+  # -- The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+  # -- Whether automounting API credentials for a service account is enabled or not.
+  automountServiceAccountToken: false
+
+# -- Secret(s) for pulling an container image from a private registry.
+imagePullSecrets: []
+
+# -- nameOverride replaces the name of the chart in the Chart.yaml file, when this is used to construct Kubernetes object names.
+nameOverride: ""
+
+# -- fullnameOverride completely replaces the generated name.
+fullnameOverride: ""
+
+# -- Override the deployment namespace.
+# Very useful for multi-namespace deployments in combined charts
+namespaceOverride: ""
+
+# -- Node Selectors in order to assign pods to certain nodes.
+nodeSelector: {}
+
+# -- Tolerations for scheduling a pod.
+tolerations: []
+
+# -- Affinity for scheduling a pod.
+affinity: {}
