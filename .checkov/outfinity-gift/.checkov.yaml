@@ -1,0 +1,13 @@
+compact: true
+directory:
+- charts/pdf-converter
+download-external-modules: false
+evaluate-variables: true
+external-modules-download-path: .external_modules
+framework:
+- helm
+quiet: true
+soft-fail: true
+var-file:
+- .checkov/pdf-converter/values.yaml
+output: cli
